@@ -4,7 +4,7 @@ const API_KEY = `35854690-4159d3cc03f107c66dd11036d`;
 const API_URL = 'https://pixabay.com/api/';
 export const PER_PAGE = 12;
 
-export const fetchPhotos = async (searchValue, currentPage) => {
+export const fetchPhotos = async ( searchValue, currentPage ) => {
   try {
     const objects = await axios.get(API_URL, {
       params: {
@@ -20,6 +20,6 @@ export const fetchPhotos = async (searchValue, currentPage) => {
     const images = objects.data;
     return images;
   } catch (error) {
-    this.setState({ error });
+    throw new Error();
   }
 };

@@ -1,84 +1,69 @@
 import SearchBar from './Searchbar/searchbar';
 import Button from './Button/button';
 import { fetchPhotos, PER_PAGE } from '../ImagesAPI/pixabayApi';
-import { Component } from 'react';
 import Loader from './Leader/leader';
 import ImagesGallery from './Imagegallery/imagegallery';
+import { useEffect, useState } from 'react';
 
-export class App extends Component {
-  state = {
-    images: [],
-    searchValue: '',
-    currentPage: 0,
-    isLoading: false,
-    error: null,
-    totalPages: 0,
-  };
+export const App = () => {
+  const [images, setImages] = useState([]);
+  const [searchValue, setSearchValue] = useState('');
+  const [currentPage, setCurrentPage] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState(null);
+  const [totalPages, setTotalPages] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
 
-  getData = event => {
+  const getData = event => {
     event.preventDefault();
     const searchWord = event.target.search.value;
-    if (searchWord !== this.state.searchValue) {
-      this.setState({
-        searchValue: searchWord,
-        currentPage: 1,
-        images: [],
-      });
+    if (searchWord !== searchValue) {
+      setSearchValue(searchWord);
+      setCurrentPage(1);
+      setImages([]);
     }
   };
 
-  nextPage = () => {
-    this.setState(prevState => ({
-      currentPage: prevState.currentPage + 1,
-    }));
+  const nextPage = () => {
+    setCurrentPage(currentPage + 1);
   };
 
-  componentDidUpdate(prevProps, prevState) {
-    const { searchValue, currentPage } = this.state;
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
-    if (
-      searchValue !== prevState.searchValue ||
-      currentPage !== prevState.currentPage
-    ) {
-      this.fetchData();
+  useEffect(() => {
+    if (isMounted) {
+      fetchData();
     }
-  }
+  }, [searchValue, currentPage]);
 
-  fetchData = async () => {
-    const { searchValue, currentPage } = this.state;
-
+  const fetchData = async () => {
     try {
-      this.setState({ isLoading: true });
+      setIsLoading(true);
       const object = await fetchPhotos(searchValue, currentPage);
       const newImages = object.hits;
       const imagesTotal = Math.ceil(object.totalHits / PER_PAGE);
 
-      this.setState(prevState => ({
-        images: [...prevState.images, ...newImages],
-        isLoading: false,
-        totalPages: imagesTotal,
-      }));
+      setImages([...images, ...newImages]);
+      setTotalPages(imagesTotal);
+      setIsLoading(false);
     } catch (error) {
-      this.setState({
-        error,
-        isLoading: false,
-      });
+      setErrors(errors);
+      setIsLoading(false);
     }
   };
 
-  render() {
-    const { isLoading, images, currentPage, totalPages } = this.state;
-    return (
-      <div className="App">
-        <SearchBar getData={this.getData} />
-        {images.length !== 0 && <ImagesGallery images={images} />}
-        {isLoading ? <Loader /> : true}
-        {images.length !== 0 && currentPage !== totalPages && (
-          <Button nextPage={this.nextPage} />
-        )}
-      </div>
-    );
-  }
-}
+  return (
+    <div className="App">
+      <SearchBar getData={getData} />
+      {images.length !== 0 && <ImagesGallery images={images} />}
+      {isLoading ? <Loader /> : true}
+      {images.length !== 0 && currentPage !== totalPages && (
+        <Button nextPage={nextPage} />
+      )}
+    </div>
+  );
+};
 
 export default App;

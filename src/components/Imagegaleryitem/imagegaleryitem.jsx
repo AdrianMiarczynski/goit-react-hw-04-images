@@ -7,7 +7,7 @@ const { useState } = require('react');
 const ImagesGalleryItem = ({ id, webformatURL, largeImageURL, alt }) => {
   const [isOpen, isOpenModal] = useState(false);
   const modalOpen = () => {
-    isOpenModal(true)
+    isOpenModal(true);
   };
   const modalClose = () => {
     isOpenModal(false);
@@ -27,32 +27,6 @@ const ImagesGalleryItem = ({ id, webformatURL, largeImageURL, alt }) => {
     </>
   );
 };
-
-// class ImagesGalleryItem extends Component {
-// modalOpen = () => {
-//   this.setState({ isOpen: true });
-// };
-
-// modalClose = () => {
-//   this.setState({ isOpen: false });
-// };
-
-// render() {
-//     const { id, webformatURL, alt, largeImageURL } = this.props;
-//     return (
-// <>
-//   <li onClick={this.modalOpen} key={id} className={css.ImageGalleryItem}>
-//     <img
-//       src={webformatURL}
-//       alt={alt}
-//       className={css['ImageGalleryItem-image']}
-//     />
-//   </li>
-//   {this.state.isOpen && <Modal largeImageURL={largeImageURL} />}
-// </>
-//     );
-//   }
-// }
 export default ImagesGalleryItem;
 
 ImagesGalleryItem.propTypes = {
