@@ -36,6 +36,7 @@ export const App = () => {
     if (isMounted) {
       fetchData();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchValue, currentPage]);
 
   const fetchData = async () => {
